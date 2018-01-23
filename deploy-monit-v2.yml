@@ -1,0 +1,38 @@
+version: '3'
+# docker stack deploy -c docker-monit.yml monitor
+services:
+  influx_v2:
+    image: influxdb
+    ports:
+      - 0.0.0.0:8086:8086
+      - 0.0.0.0:8089:8089
+    env_file:
+      - $PWD/influxdb.env
+    volumes:
+      - influx:/var/lib/influxdb
+      - $PWD/influxdb.conf:/etc/influxdb/influxdb.conf:ro
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 0.0.0.0:8099:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    depends_on:
+      - influx
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+volumes:
+  influx:
+    driver: local
+  grafana:
+    driver: local
