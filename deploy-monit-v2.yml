@@ -2,7 +2,7 @@ version: '3'
 # docker stack deploy -c docker-monit.yml monitor
 services:
   influx_v2:
-    image: influxdb
+    image: influxdb:1.3
     ports:
       - 0.0.0.0:8086:8086
       - 0.0.0.0:8089:8089
@@ -16,6 +16,13 @@ services:
       placement:
         constraints:
           - node.role == manager
+    network:
+      - monitoring_network
+
+  telegraf:
+    image: telegraf
+    network:
+      - monitoring_network
 
   grafana:
     image: grafana/grafana
