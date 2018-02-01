@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $(ifconfig | grep -B1 "inet addr:10.240.142.177" | awk '$1!="inet" && $1!="--" {print $1}')
+echo $(ifconfig | grep -B1 "inet addr:&REMOTE_ADDRESS" | awk '$1!="inet" && $1!="--" {print $1}')
