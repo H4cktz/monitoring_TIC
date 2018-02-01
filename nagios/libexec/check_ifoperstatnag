@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# Check ifoperstatus() without calling the perl routine, this script uses
+# snmpwalk to get the info.
+#
+# $1: Interface ; $@ snmpwalk/snmpget args for snmp v3
+#
+# by nAAs <nalvarezs@elo.utfsm.cl>
+# Edits by Nagios Enterprises, LLC
+
+LIBEXEC=$(dirname $0)
+. $LIBEXEC/utils.sh
+
+# make sure iface is pos int, else print usage and exit.
+if test -z "$1" || ! [[ "$1" =~ ^[0-9]+$ ]]; then
+	cat << EOF
+Usage $0: <interface index> <snmpget options>
+  Check_ifoperstatus requires that the first argument be the interface index that this interface can be found at under the remote devices snmp tree.
+  This should always be a positive integer, or zero.
+  All options beyond the first, are arguments that must follow the snmpget command line parameters.
+EOF
+	exit $STATE_UNKNOWN
+fi
+
+iface=$1
+shift
+
+# Find the interface name and put it into an array, if possible
+name=$(snmpget $@ ifDescr.$iface)
+name=($name)
+if [ -z $name ]; then
+	ifacename=$iface
+else
+	ifacename="${name[3]} (index $iface)"
+fi
+
+# Get and process admin down first.
+adminstatus=$(snmpget $@ ifAdminStatus.$iface | awk -F: '{print $4}' | awk -F\( '{print $2}' | awk -F\) '{print $1}')
+if [ $adminstatus -eq 2 ]; then
+	echo "CRITICAL - Interface $ifacename is administratively down."
+	exit $STATE_CRITICAL
+fi
+
+# Now that we are not admin down, check and process operstatus
+comm=$(snmpget $@ ifOperStatus.$iface | awk -F: '{print $4}' | awk -F\( '{print $2}' | awk -F\) '{print $1}')
+if [ -z $comm ]; then
+	echo "UNKNOWN - No info is being retrieved."
+	exit $STATE_UNKNOWN
+elif [ $comm -eq 1 ]; then
+	echo "OK - Interface $ifacename is up."
+	exit $STATE_OK
+elif [ $comm -eq 2 ]; then
+	echo "CRITICAL - Interface $ifacename is down"
+	exit $STATE_CRITICAL
+else
+	echo "UNKNOWN - No info is being retrieved"
+	exit $STATE_UNKNOWN
+fi
+
