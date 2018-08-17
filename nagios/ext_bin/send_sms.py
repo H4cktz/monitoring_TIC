@@ -5,7 +5,7 @@ import sys
 
 
 def main(phone, msg):
-    url = "http://10.30.154.108:1128/v1.0/sms"
+    url = "url"
     data = msg.split('|')
     type = data[0]
     # sms = data[1].split('__')[0] + data[2]
