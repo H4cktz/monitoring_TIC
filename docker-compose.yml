@@ -38,8 +38,8 @@ services:
     environment:
       INFLUXDB_URL: http://influx:8086
       KAPACITOR_URL: http://kapacitor:9092
-      INFLUXDB_USERNAME: developer
-      INFLUXDB_PASSWORD: vtcc@123
+      INFLUXDB_USERNAME: admin
+      INFLUXDB_PASSWORD: admin@123
     volumes:
       - ./data/chronograf:/var/lib/chronograf
     ports:
@@ -56,8 +56,8 @@ services:
     environment:
       KAPACITOR_HOSTNAME: kapacitor
       KAPACITOR_INFLUXDB_0_URLS_0: http://influx:8086
-      INFLUXDB_USERNAME: developer
-      INFLUXDB_PASSWORD: vtcc@123
+      INFLUXDB_USERNAME: admin
+      INFLUXDB_PASSWORD: admin@123
     ports:
       - "9092:9092" 
     links:
