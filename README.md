@@ -11,7 +11,7 @@ $ docker load -i nagios4.tar
 ```
 3. Run 
 ```sh
-$ docker run -d -v ~/nagios/etc/:/opt/nagios/etc/ -v ~/nagios/ext_bin:/opt/nagios/ext_bin  -v ~/nagios/ext_lib/check_mongodb.py:/opt/nagios/libexec/check_mongodb.py --name nagios4 -p 8443:80 -p 5667:5666 nagios4
+$ docker run -d -v ~/nagios/etc/:/opt/nagios/etc/ -v ~/nagios/ext_bin:/opt/nagios/ext_bin --name nagios4 -p 8443:80 -p 5667:5666 nagios4
 ```
 
 
