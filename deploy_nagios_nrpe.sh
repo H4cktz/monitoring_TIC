@@ -1,7 +1,6 @@
 #! /bin/bash
 DIR=$PWD
-PROXY_CMD='export http_proxy="http://10.240.142.150:8443" && export https_proxy="http://10.240.142.150:8443"'
-NAGIOS_ADDRESS=10.240.152.164
+NAGIOS_ADDRESS=127.0.0.1
 
 get_distribution() {
 	lsb_dist=""
@@ -41,7 +40,7 @@ setup_nrpe_config(){
 
 install_nrpe_agent(){
   echo "Install NRPE agent"
-  ssh -t $ssh_address "${PROXY_CMD} && sudo apt-get install -y nagios-plugins nagios-nrpe-server"
+  ssh -t $ssh_address " sudo apt-get install -y nagios-plugins nagios-nrpe-server"
 }
 
 open_port(){
